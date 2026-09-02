@@ -18,11 +18,13 @@ class TestLoginCourier:
 
         response = requests.post(LOGIN_COURIER_URL, data=payload)
 
-        assert response.status_code == 200
-        assert "id" in response.json()
-
-        courier_id = response.json()["id"]
-        requests.delete(f"{DELETE_COURIER_URL}/{courier_id}")
+        try:
+            assert response.status_code == 200
+            assert "id" in response.json()
+        finally:
+            login_response = requests.post(LOGIN_COURIER_URL, data={"login": login_pass[0], "password": login_pass[1]})
+            courier_id = login_response.json()["id"]
+            requests.delete(f"{DELETE_COURIER_URL}/{courier_id}")
 
     @allure.title("Нельзя авторизоваться без логина")
     def test_login_courier_without_login(self):
@@ -44,6 +46,7 @@ class TestLoginCourier:
         response = requests.post(LOGIN_COURIER_URL, data=payload)
 
         assert response.status_code == 400
+        assert response.json() == {"code": 400, "message": "Недостаточно данных для входа"}
 
     @allure.title("Нельзя авторизоваться с неправильным логином")
     def test_login_courier_with_wrong_login(self):
@@ -68,12 +71,13 @@ class TestLoginCourier:
 
         response = requests.post(LOGIN_COURIER_URL, data=payload)
 
-        assert response.status_code == 404
-        assert response.json() == {"code": 404, "message": "Учетная запись не найдена"}
-
-        login_response = requests.post(LOGIN_COURIER_URL, data={"login": login_pass[0], "password": login_pass[1]})
-        courier_id = login_response.json()["id"]
-        requests.delete(f"{DELETE_COURIER_URL}/{courier_id}")
+        try:
+            assert response.status_code == 404
+            assert response.json() == {"code": 404, "message": "Учетная запись не найдена"}
+        finally:
+            login_response = requests.post(LOGIN_COURIER_URL, data={"login": login_pass[0], "password": login_pass[1]})
+            courier_id = login_response.json()["id"]
+            requests.delete(f"{DELETE_COURIER_URL}/{courier_id}")
 
     @allure.title("Нельзя авторизоваться под несуществующим курьером")
     def test_login_nonexistent_courier(self):

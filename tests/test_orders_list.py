@@ -11,4 +11,4 @@ class TestOrdersList:
         response = requests.get(ORDERS_LIST_URL)
 
         assert response.status_code == 200
-        assert "orders" in response.json()
+        assert isinstance(response.json()["orders"], list)
