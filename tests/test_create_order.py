@@ -17,11 +17,10 @@ class TestCreateOrder:
         response = requests.post(CREATE_ORDER_URL, json=payload)
         track = response.json()["track"]
 
-        try:
-            assert response.status_code == 201
-            assert "track" in response.json()
-        finally:
-            requests.put(CANCEL_ORDER_URL, params={"track": track})
+        assert response.status_code == 201
+        assert "track" in response.json()
+
+        requests.put(CANCEL_ORDER_URL, params={"track": track})
 
     @allure.title("Создание заказа без указания цвета")
     def test_create_order_without_color(self):
@@ -30,8 +29,7 @@ class TestCreateOrder:
         response = requests.post(CREATE_ORDER_URL, json=payload)
         track = response.json()["track"]
 
-        try:
-            assert response.status_code == 201
-            assert "track" in response.json()
-        finally:
-            requests.put(CANCEL_ORDER_URL, params={"track": track})
+        assert response.status_code == 201
+        assert "track" in response.json()
+
+        requests.put(CANCEL_ORDER_URL, params={"track": track})

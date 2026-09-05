@@ -12,5 +12,6 @@ ORDER_DATA = {
 ORDER_COLORS = [
     ["BLACK"],
     ["GREY"],
-    ["BLACK", "GREY"]
+    ["BLACK", "GREY"],
+    []
 ]
